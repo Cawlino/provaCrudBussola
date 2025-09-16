@@ -134,6 +134,7 @@ app.get('/cursos', async (req, res) => {
 
 app.post('/cursos', async (req, res) => {
     try {
+        if (!req.body) return res.status(400).json({ error: 'Corpo da requisição ausente' });
         const { nome, cargaHoraria, dataInicio } = req.body;
         const novoCurso = await createCurso(nome, cargaHoraria, dataInicio);
         res.status(201).json(novoCurso);
@@ -154,6 +155,7 @@ app.delete('/cursos/:id', async (req, res) => {
 
 app.post('/cursos/:id/disciplinas', async (req, res) => {
     try {
+        if (!req.body) return res.status(400).json({ error: 'Corpo da requisição ausente' });
         const cursoId = req.params.id;
         const { nome } = req.body;
         if (!nome) return res.status(400).json({ error: 'O nome da disciplina é obrigatório' });
@@ -166,6 +168,11 @@ app.post('/cursos/:id/disciplinas', async (req, res) => {
     }
 });
 
+// --- Iniciar o Servidor ---
+app.listen(PORT, () => {
+    console.log(`Servidor rodando em http://localhost:${PORT}`);
+});
+
 app.delete('/cursos/:cursoId/disciplinas/:disciplinaId', async (req, res) => {
     try {
         const { cursoId, disciplinaId } = req.params;
@@ -176,4 +183,3 @@ app.delete('/cursos/:cursoId/disciplinas/:disciplinaId', async (req, res) => {
         res.status(500).json({ error: err.message });
     }
 });
-
